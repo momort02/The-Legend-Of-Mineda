@@ -1,0 +1,14 @@
+{
+  "itemGroup.thelegendofmineda": "Example Mod Tab",
+  "block.thelegendofmineda.example_block": "Example Block",
+  "item.thelegendofmineda.example_item": "Example Item",
+  "item.thelegendofmineda.legendary_sword": "Legendary Sword",
+
+  "thelegendofmineda.configuration.title": "The Legend Of Mineda Configs",
+  "thelegendofmineda.configuration.section.thelegendofmineda.common.toml": "The Legend Of Mineda Configs",
+  "thelegendofmineda.configuration.section.thelegendofmineda.common.toml.title": "The Legend Of Mineda Configs",
+  "thelegendofmineda.configuration.items": "Item List",
+  "thelegendofmineda.configuration.logDirtBlock": "Log Dirt Block",
+  "thelegendofmineda.configuration.magicNumberIntroduction": "Magic Number Text",
+  "thelegendofmineda.configuration.magicNumber": "Magic Number"
+}
