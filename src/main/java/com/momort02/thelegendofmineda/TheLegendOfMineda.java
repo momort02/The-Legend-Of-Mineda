@@ -6,7 +6,12 @@ import com.mojang.logging.LogUtils;
 
 import com.momort02.thelegendofmineda.block.SwordPedestalBlock;
 import com.momort02.thelegendofmineda.block.entity.SwordPedestalBlockEntity;
+import com.momort02.thelegendofmineda.item.LegendarySwordCharge;
 import com.momort02.thelegendofmineda.item.LegendarySwordItem;
+import com.momort02.thelegendofmineda.network.LegendarySwordChargePayload;
+import com.momort02.thelegendofmineda.worldgen.LegendarySwordShrine;
+import com.momort02.thelegendofmineda.worldgen.LegendarySwordShrineData;
+import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -32,7 +37,10 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -89,6 +97,7 @@ public class TheLegendOfMineda {
     public TheLegendOfMineda(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(LegendarySwordChargePayload::register);
 
         // Register the Deferred Register to the mod event bus so blocks get registered
         BLOCKS.register(modEventBus);
@@ -138,10 +147,35 @@ public class TheLegendOfMineda {
     }
 
     @SubscribeEvent
+    public void generateLegendarySwordShrine(ServerStartedEvent event) {
+        var overworld = event.getServer().overworld();
+        LegendarySwordShrineData shrineData = overworld.getDataStorage().computeIfAbsent(LegendarySwordShrineData.TYPE);
+        if (shrineData.isGenerated()) {
+            return;
+        }
+
+        LegendarySwordShrine.generate(overworld, event.getServer().getRespawnData().globalPos().pos());
+        shrineData.markGenerated();
+    }
+
+    @SubscribeEvent
     public void onPlayerAttack(AttackEntityEvent event) {
         ItemStack weapon = event.getEntity().getMainHandItem();
-        if (weapon.is(LEGENDARY_SWORD.get()) && event.getEntity().getCooldowns().isOnCooldown(weapon)) {
+        if (weapon.is(LEGENDARY_SWORD.get())
+                && (event.getEntity().getCooldowns().isOnCooldown(weapon) || LegendarySwordCharge.isCharging(event.getEntity()))) {
             event.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(PlayerTickEvent.Post event) {
+        if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
+            LegendarySwordCharge.tick(player);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        LegendarySwordCharge.removePlayer(event.getEntity());
     }
 }

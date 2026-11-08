@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
@@ -34,8 +35,12 @@ public class SwordPedestalRenderer implements BlockEntityRenderer<SwordPedestalB
             Vec3 cameraPosition,
             ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
+        var displayStack = blockEntity.getSword().copy();
+        if (!displayStack.isEmpty()) {
+            displayStack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+        }
         itemModelResolver.updateForTopItem(
-                state.sword, blockEntity.getSword(), ItemDisplayContext.NONE, blockEntity.getLevel(), null, (int) blockEntity.getBlockPos().asLong());
+                state.sword, displayStack, ItemDisplayContext.NONE, blockEntity.getLevel(), null, (int) blockEntity.getBlockPos().asLong());
     }
 
     @Override
