@@ -1,5 +1,6 @@
 package com.momort02.thelegendofmineda;
 
+import com.momort02.thelegendofmineda.client.SwordPedestalRenderer;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -9,6 +10,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
 @Mod(value = TheLegendOfMineda.MODID, dist = Dist.CLIENT)
@@ -20,6 +22,11 @@ public class TheLegendOfMinedaClient {
         // The config screen is accessed by going to the Mods screen > clicking on your mod > clicking on config.
         // Do not forget to add translations for your config options to the en_us.json file.
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+    }
+
+    @SubscribeEvent
+    static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(TheLegendOfMineda.SWORD_PEDESTAL_BLOCK_ENTITY.get(), SwordPedestalRenderer::new);
     }
 
     @SubscribeEvent

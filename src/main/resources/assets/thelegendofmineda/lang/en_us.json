@@ -1,8 +1,10 @@
 {
   "itemGroup.thelegendofmineda": "Example Mod Tab",
   "block.thelegendofmineda.example_block": "Example Block",
+  "block.thelegendofmineda.sword_pedestal": "Sword Pedestal",
   "item.thelegendofmineda.example_item": "Example Item",
   "item.thelegendofmineda.legendary_sword": "Legendary Sword",
+  "item.thelegendofmineda.sword_pedestal": "Sword Pedestal",
 
   "thelegendofmineda.configuration.title": "The Legend Of Mineda Configs",
   "thelegendofmineda.configuration.section.thelegendofmineda.common.toml": "The Legend Of Mineda Configs",
